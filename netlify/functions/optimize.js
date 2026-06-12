@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 exports.handler = async (event, context) => {
     // السماح فقط بطلبات POST لزيادة الأمان
     if (event.httpMethod !== "POST") {
