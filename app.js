@@ -24,7 +24,7 @@ document.getElementById('optimizeBtn').addEventListener('click', async () => {
     نسق الإجابة بنقاط واضحة وبأسلوب احترافي مشوق ومناسب للشركات.`;
 
     try {
-        const API_KEY = "AQ.Ab8RN6JD25Z5iWBdlqhXgHIlVVYuVhEMl1Kd77cdUrUaBvzlUQ"; 
+        const API_KEY = "AIzaSyDk010-wpEC-oSPUmngZmSpADaB45pSkzU"; 
         
         // الرابط الرسمي المستقر والمؤكد لنموذج Gemini 1.5 Flash
         const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
