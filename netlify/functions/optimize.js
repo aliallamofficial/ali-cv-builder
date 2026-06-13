@@ -1,5 +1,4 @@
 exports.handler = async (event, context) => {
-    // السماح فقط بطلبات POST
     if (event.httpMethod !== "POST") {
         return { 
             statusCode: 405, 
@@ -9,35 +8,57 @@ exports.handler = async (event, context) => {
 
     try {
         const { promptMessage } = JSON.parse(event.body);
-        const API_KEY = "AQ.Ab8RN6KheAp9j_ESVIZg4F96dHcz1cCd3fYBq1UDw9hdA_SJyA";
+        
+        // قراءة مفتاح جوجل السري بأمان
+        const API_KEY = process.env.GEMINI_API_KEY;
 
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        if (!API_KEY) {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "خطأ: لم يتم ضبط مفتاح Gemini السري في إعدادات الخادم بعد." })
+            };
+        }
+
+        // رابط الاتصال الرسمي بنظام ذكاء جوجل الاصطناعي Gemini 1.5 Flash
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: "llama3-8b-8192",
-                messages: [{ role: "user", content: promptMessage }]
+                contents: [{
+                    parts: [{ text: promptMessage }]
+                }]
             })
         });
 
         const data = await response.json();
 
-        // التأكد من أن الرد يحتوي على خيارات الإجابة من الذكاء الاصطناعي
-        if (data.choices && data.choices[0].message) {
+        // التأكد من أن جوجل أرسل الرد بنجاح
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+            const aiText = data.candidates[0].content.parts[0].text;
+            
+            // صياغة الرد بنفس الشكل المتوقع في الواجهة ليعمل الكود دون تعديل في app.js
+            const formattedResponse = {
+                choices: [{
+                    message: {
+                        content: aiText
+                    }
+                }]
+            };
+
             return {
                 statusCode: 200,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                body: JSON.stringify(formattedResponse)
             };
         } else {
-            // في حال أرجعت شركة Groq خطأ في المفتاح أو الخدمة
             return {
                 statusCode: 400,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: data.error?.message || "فشل الذكاء الاصطناعي في الاستجابة، يرجى التحقق من الخادم." })
+                body: JSON.stringify({ error: data.error?.message || "فشل ذكاء Gemini في الاستجابة." })
             };
         }
 
@@ -45,7 +66,7 @@ exports.handler = async (event, context) => {
         return { 
             statusCode: 500, 
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ error: "حدث خطأ أثناء الاتصال بالسيرفر الداخلي: " + error.message }) 
+            body: JSON.stringify({ error: "حدث خطأ أثناء الاتصال بسيرفر جوجل الداخلي: " + error.message }) 
         };
     }
 };
