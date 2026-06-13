@@ -24,11 +24,10 @@ document.getElementById('optimizeBtn').addEventListener('click', async () => {
     نسق الإجابة بنقاط واضحة وبأسلوب احترافي مشوق ومناسب للشركات.`;
 
     try {
-        // نضع المفتاح الذي حصلت عليه هنا مباشرة لتخطي مشاكل السيرفرات تماماً
         const API_KEY = "AQ.Ab8RN6JD25Z5iWBdlqhXgHIlVVYuVhEMl1Kd77cdUrUaBvzlUQ"; 
         
-        // الرابط الرسمي والمباشر لشركة جوجل بدون أي وسيط
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        // الرابط الرسمي المستقر والمؤكد لنموذج Gemini 1.5 Flash
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
         const response = await fetch(url, {
             method: 'POST',
@@ -46,7 +45,7 @@ document.getElementById('optimizeBtn').addEventListener('click', async () => {
 
         if (response.ok && data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
             const aiResult = data.candidates[0].content.parts[0].text;
-            resultBox.innerHTML = `<div style="white-space: pre-line; color: #fff; line-height: 1.6;">${aiResult}</div>`;
+            resultBox.innerHTML = `<div style="white-space: pre-line; color: #fff; line-height: 1.6; text-align: right;">${aiResult}</div>`;
         } else {
             const errMsg = data.error?.message || 'حدث خطأ في استجابة جوجل.';
             resultBox.innerHTML = `<p style="color: #ff4a4a; font-weight: bold;">خطأ: ${errMsg}</p>`;
