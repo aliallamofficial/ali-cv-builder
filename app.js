@@ -26,7 +26,7 @@ document.getElementById('optimizeBtn').addEventListener('click', async () => {
 
     try {
         // الاتصال المباشر عبر خدمات Netlify الداخلية
-        const response = await fetch('/.netlify/functions/optimize', {
+        const response = await fetch('/.netlify/functions/optimize?v=2', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
