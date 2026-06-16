@@ -17,8 +17,8 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // استخدام نموذج gemini-1.5-pro المستقر لحل مشكلة عدم العثور على النموذج نهائياً
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`;
+        // استخدام النموذج الأساسي المستقر والمتاح مجاناً لكافة الحسابات تلقائياً
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
 
         const response = await fetch(url, {
             method: 'POST',
