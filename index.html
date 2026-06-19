@@ -80,3 +80,23 @@
         <footer>
             <p>تم التطوير بكل فخر بواسطة <span class="developer-name">علي حاتم علام</span> © 2026</p>
             <div class="footer-links" style="margin-top: 10px;">
+                <a href="http://www.linkedin.com/in/aliallamofficial" target="_blank" style="color: #3b82f6; margin: 0 10px; text-decoration: none; font-weight: bold;">LinkedIn</a> | 
+                <a href="https://github.com/aliallamofficial" target="_blank" style="color: #f8fafc; margin: 0 10px; text-decoration: none; font-weight: bold;">GitHub</a> | 
+                <a href="mailto:prof.ali.hatem.cairo@gmail.com" style="color: #10b981; margin: 0 10px; text-decoration: none; font-weight: bold;">تواصل معي ✉️</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('تطبيق PWA جاهز للعمل!'))
+            .catch(err => console.log('حدث خطأ في الـ PWA', err));
+        });
+      }
+    </script>
+</body>
+</html>
