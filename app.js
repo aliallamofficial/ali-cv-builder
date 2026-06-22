@@ -194,3 +194,18 @@ document.getElementById('downloadWordBtn').addEventListener('click', () => {
         a.click();
     }
 });
+
+// ==========================================
+// التعديل الجديد: إخفاء الواجهة الترحيبية المتحركة بعد ثانيتين
+// ==========================================
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            splash.style.opacity = '0'; // تأثير تلاشي ناعم
+            setTimeout(() => {
+                splash.remove(); // إزالة العنصر تماماً من شجرة الـ DOM
+            }, 500);
+        }
+    }, 2000); // العرض مستمر لمدة ثانيتين كاملتين (2000ms)
+});
