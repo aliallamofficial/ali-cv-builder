@@ -146,52 +146,29 @@ document.addEventListener('click', () => {
     document.getElementById('downloadOptions').classList.add('hidden');
 });
 
-// 📄 خيار تحميل بصيغة PDF والطباعة المباشرة المتوافقة مع التطبيقات
+// 📄 خيار تحميل بصيغة PDF المتوافق تماماً مع الهواتف الذكية والتطبيقات
 document.getElementById('downloadPdfBtn').addEventListener('click', () => {
     const cvElement = document.getElementById('cvTemplateArea');
     const cvContent = cvElement.innerHTML;
     const isEn = cvElement.style.textAlign === 'left';
     const direction = isEn ? 'ltr' : 'rtl';
 
-    // إنشاء إطار خفي (iframe) للطباعة دون فتح صفحة أو نافذة جديدة تسبب مشاكل داخل التطبيق
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'fixed';
-    iframe.style.right = '0';
-    iframe.style.bottom = '0';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = '0';
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow.document;
-    doc.open();
-    doc.write(`<html dir="${direction}"><head><title>السيرة_الذاتية</title><style>body{font-family:sans-serif; padding:20px; color:#000; background:#fff;}</style></head><body>${cvContent}</body></html>`);
-    doc.close();
-
-    // تشغيل أمر الحفظ كـ PDF والطباعة من داخل الإطار الخفي
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-
-    // تنظيف العنصر المؤقت بعد ثوانٍ بسيطة
-    setTimeout(() => {
-        document.body.removeChild(iframe);
-    }, 1000);
+    const fullHtml = `<html dir="${direction}"><head><title>السيرة_الذاتية</title><style>body{font-family:sans-serif; padding:20px; color:#000; background:#fff;}</style></head><body>${cvContent}</body></html>`;
+    
+    // التحويل المباشر إلى رابط بيانات Data URL صريح ومفهوم للأندرويد
+    const pdfUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(fullHtml);
+    window.location.href = pdfUrl;
 });
 
-// 📄 خيار تحميل السيرة الذاتية بصيغة Word (.doc) المباشر
+// 📄 خيار تحميل السيرة الذاتية بصيغة Word (.doc) المباشر المتوافق مع الهواتف
 document.getElementById('downloadWordBtn').addEventListener('click', () => {
     const cvContent = document.getElementById('cvTemplateArea').innerText;
     
-    // إنشاء عنصر رابط خفي لتحميل الملف بصيغة Word
-    const blob = new Blob(['\ufeff' + cvContent], { type: 'application/msword;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'السيرة_الذاتية.doc';
-    document.body.appendChild(a);
-    a.click();
+    // استخدام طريقة التحويل المباشر لتجنب قيود الـ Blob داخل الـ WebView
+    const wordUrl = 'data:application/msword;charset=utf-8,\ufeff' + encodeURIComponent(cvContent);
     
-    // تنظيف العناصر المؤقتة
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const a = document.createElement('a');
+    a.href = wordUrl;
+    a.download = 'السيرة_الذاتية.doc';
+    a.click();
 });
