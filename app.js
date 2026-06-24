@@ -226,10 +226,15 @@ document.addEventListener('click', () => {
     if(options) options.classList.add('hidden');
 });
 
-// 📄 خيار تحميل بصيغة PDF حقيقي ومغلق (غير قابل للتعديل من قِبل أي شخص)
+// 📄 خيار تحميل بصيغة PDF حقيقي ومغلق (مُعدل ومُصلح لحل مشكلة الصفحة البيضاء تماماً)
 document.getElementById('downloadPdfBtn').addEventListener('click', () => {
     const cvElement = document.getElementById('cvTemplateArea');
-    if (!cvElement) return;
+    
+    // منع التحميل إذا كانت لوحة النتيجة فارغة تماماً
+    if (!cvElement || cvElement.innerText.trim() === "" || cvElement.innerText.includes("ستظهر سيرتك الذاتية")) {
+        alert(document.getElementById('langSelect').value === 'ar' ? 'يرجى تحسين السيرة الذاتية أولاً وتوليد النص قبل محاولة تحميلها!' : 'Please optimize your CV first before downloading!');
+        return;
+    }
 
     const selectedLang = document.getElementById('langSelect').value;
     const isEn = cvElement.style.textAlign === 'left';
@@ -237,12 +242,12 @@ document.getElementById('downloadPdfBtn').addEventListener('click', () => {
 
     let currentHtml = cvElement.innerHTML;
 
-    // حقن التوقيع البرمجي الموثق ومفتاح الـ GPG التابع لك إذا لم يكن محقوناً
+    // حقن التوقيع البرمجي الموثق ومفتاح الـ GPG التابع لك إذا لم يكن محقوناً بالأسفل
     if (!currentHtml.includes('cv-crypto-footer')) {
         currentHtml = appendCryptoSignatureToCV(currentHtml);
     }
 
-    // بناء حاوية طباعة مستقلة بيضاء ونظيفة لتحويلها لصورة مرئية داخل الـ PDF
+    // بناء حاوية طباعة مستقلة ونظيفة وإجبار الألوان لحل مشكلة اختفاء النصوص البيضاء
     const optArea = document.createElement('div');
     optArea.style.direction = direction;
     optArea.style.padding = '35px';
@@ -250,11 +255,18 @@ document.getElementById('downloadPdfBtn').addEventListener('click', () => {
     optArea.style.color = '#000000';      
     optArea.innerHTML = currentHtml;
 
-    // إخفاء شارة الواجهة البرمجية العلوية داخل ملف الـ PDF والاكتفاء بالتوقيع الرسمي السفلي
+    // إصلاح جذري: إجبار جميع النصوص والوسوم الداخلية على اللون الأسود لتقرأها المكتبة بوضوح فوق الصفحة البيضاء
+    const allElements = optArea.querySelectorAll('*');
+    allElements.forEach(el => {
+        el.style.color = '#000000';
+        el.style.backgroundColor = 'transparent';
+    });
+
+    // إخفاء شارة الواجهة البرمجية العلوية داخل ملف الـ PDF والاكتفاء بالتوقيع الرسمي السفلي المكتوب
     const badge = optArea.querySelector('.crypto-badge');
     if (badge) badge.style.display = 'none';
 
-    // إعدادات مكتبة html2pdf المتقدمة للقفل والدمج الكامل
+    // إعدادات مكتبة html2pdf المتقدمة للقفل والدمج الكامل والواضح
     const options = {
         margin:       0.5,
         filename:     'السيرة_الذاتية_الموثقة.pdf',
@@ -265,7 +277,7 @@ document.getElementById('downloadPdfBtn').addEventListener('click', () => {
 
     alert(selectedLang === 'ar' ? 'جاري إنشاء مستند PDF محمّي ومقفل وموثق رقمياً...' : 'Generating a secured and locked PDF document...');
     
-    // تنفيذ عملية الطباعة الرسومية المقفلة والمشفرة (Read-Only)
+    // تنفيذ عملية التوليد الرسومية المقفلة
     html2pdf().set(options).from(optArea).save().then(() => {
         navigator.clipboard.writeText(cvElement.innerText).catch(() => {});
     });
@@ -276,7 +288,7 @@ document.getElementById('downloadWordBtn').addEventListener('click', () => {
     const cvElement = document.getElementById('cvTemplateArea');
     if (!cvElement) return;
 
-    // 🌟 الخطوة الثانية: إظهار التنبيه التوضيحي الصارم للمستخدم قبل التحميل
+    // إظهار التنبيه التوضيحي الصارم للمسخدم قبل التحميل
     alert("تنبيه: ملف الـ Word مخصص للتعديل الشخصي، بينما نسخة الـ PDF هي النسخة الرسمية المقفلة والموثقة التي تُرسل للموظفين.");
 
     let cvContentText = cvElement.innerText;
@@ -287,31 +299,10 @@ document.getElementById('downloadWordBtn').addEventListener('click', () => {
     const wordUrl = 'data:application/msword;charset=utf-8,\ufeff' + encodeURIComponent(fullWordContent);
 
     navigator.clipboard.writeText(fullWordContent).then(() => {
-        // تم تكييف الرسالة لتتوافق مع التنبيه
         console.log("Copied signed text to clipboard.");
     }).catch(() => {});
 
     if (typeof median !== 'undefined' && median.download) {
         median.download.downloadFile({ url: wordUrl, filename: 'السيرة_الذاتية.doc' });
     } else {
-        const a = document.createElement('a');
-        a.href = wordUrl;
-        a.download = 'السيرة_الذاتية.doc';
-        a.click();
-    }
-});
-
-// ==========================================
-// إخفاء الواجهة الترحيبية المتحركة بعد ثانيتين
-// ==========================================
-window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-            splash.style.opacity = '0'; 
-            setTimeout(() => {
-                splash.remove(); 
-            }, 500);
-        }
-    }, 2000);
-});
+        const a = document.createElement('a
