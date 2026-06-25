@@ -306,3 +306,23 @@ document.getElementById('downloadWordBtn').addEventListener('click', () => {
         median.download.downloadFile({ url: wordUrl, filename: 'السيرة_الذاتية.doc' });
     } else {
         const a = document.createElement('a');
+        a.href = wordUrl;
+        a.download = 'السيرة_الذاتية.doc';
+        a.click();
+    }
+});
+
+// ==========================================
+// إخفاء الواجهة الترحيبية المتحركة بعد ثانيتين تماماً
+// ==========================================
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            splash.style.opacity = '0'; 
+            setTimeout(() => {
+                splash.remove(); 
+            }, 500);
+        }
+    }, 2000);
+});
