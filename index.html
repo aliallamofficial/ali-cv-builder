@@ -121,12 +121,33 @@
             </section>
         </main>
 
-        <footer>
-            <p>تم التطوير بكل فخر بواسطة <span class="developer-name">علي حاتم علام</span> © 2026</p>
-            <p class="footer-gpg-text">Verified: @aliallamofficial [GPG: 55392380FBF1C8F1]</p>
+        <footer style="text-align: center; padding: 20px 10px; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p style="margin: 0 0 8px 0;">تم التطوير بكل فخر بواسطة <span class="developer-name" style="color: #38bdf8; font-weight: bold;">علي حاتم علام</span> © 2026</p>
+            
+            <div class="footer-gpg-panel" style="background: rgba(0, 0, 0, 0.2); display: inline-block; padding: 6px 15px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;">
+                <p class="footer-gpg-text" style="font-family: monospace; font-size: 11px; color: #94a3b8; margin: 0; letter-spacing: 0.5px;">
+                    Verified: @aliallamofficial [GPG: 55392380FBF1C8F1]
+                </p>
+            </div>
+            
+            <div class="footer-links" style="font-size: 14px; margin-top: 5px;">
+                <a href="https://github.com/aliallamofficial" target="_blank" style="color: #f8fafc; text-decoration: none; font-weight: bold; margin: 0 5px;">GitHub</a> | 
+                <a href="http://www.linkedin.com/in/aliallamofficial" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: bold; margin: 0 5px;">LinkedIn</a> | 
+                <a href="mailto:prof.ali.hatem.cairo@gmail.com" style="color: #34d399; text-decoration: none; font-weight: bold; margin: 0 5px;">✉️ تواصل معي</a>
+            </div>
         </footer>
     </div>
 
     <script src="app.js"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('تطبيق PWA جاهز للعمل!'))
+            .catch(err => console.log('حدث خطأ في الـ PWA', err));
+        });
+      }
+    </script>
 </body>
 </html>
