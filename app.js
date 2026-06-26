@@ -357,60 +357,88 @@ const cvTips = [
     "تجنب وضع صورتك الشخصية إذا كنت تقدم على شركات عالمية تعتمد نظام ATS تماماً.",
     "احرص على ألا تتجاوز سيرتك الذاتية صفحة واحدة إذا كانت خبرتك أقل من 5 سنوات.",
     "استخدم أرقاماً ونسباً مئوية حقيقية لإثبات إنجازاتك (مثال: زيادة المبيعات بنسبة 20%).",
-    "البريد الإلكتروني المهني يجب أن يحتوي على اسمك الحقيقي، ابتعد تماماً عن الأسماء المستعارة.",
+    "البريد الإلكتروني المهني يجب أن يحتوي على اسمك الحقيقي، ابتعد تماماً عن الأسماء مستعارة.",
     "الكلمات المفتاحية المأخوذة من إعلان الوظيفة نفسه هي مفتاحك السحري لتخطي فلترة الـ ATS."
 ];
 
 // ==========================================
-// 🔄 دالة الفحص التلقائي لآخر تعديل للملفات على السيرفر
+// 🔄 دالة الفحص التلقائي لآخر تعديل للملفات على السيرفر لإطلاق التنبيهات
 // ==========================================
 async function checkAutomatedUpdates() {
     if (!navigator.onLine) return;
     try {
-        // نقوم بعمل طلب برأسه فقط (HEAD) لملف الـ HTML لمعرفة تاريخ آخر تعديل له دون استهلاك البيانات
         const response = await fetch(window.location.href, { method: 'HEAD', cache: 'no-cache' });
         const lastModifiedHeader = response.headers.get('Last-Modified') || response.headers.get('ETag');
         
         if (lastModifiedHeader) {
             const savedBuildTag = localStorage.getItem('app_last_build_tag');
             
-            // إذا كان التاج المخزن يختلف عن المأخوذ من السيرفر، فهذا يعني أنك رفعت تعديلاً جديداً للأكواد!
             if (savedBuildTag && savedBuildTag !== lastModifiedHeader) {
-                
-                // إطلاق إشعار النظام المباشر
                 if ("Notification" in window && Notification.permission === "granted") {
                     new Notification("🚀 تم تحديث التطبيق تلقائياً!", {
                         body: "هناك ميزات وتحسينات جديدة تمت إضافتها للتطبيق، ألقِ نظرة عليها الآن."
                     });
                 }
-                
-                // تنبيه المستخدم داخل الواجهة لتحديث الصفحة والحصول على الميزات الجديدة
                 setTimeout(() => {
                     alert("✨ تحديث تلقائي سحري:\nتم رصد تعديلات برمجية وتحسينات جديدة في النظام لزيادة سرعة الذكاء الاصطناعي وتطوير المظهر!");
                 }, 3000);
             }
-            // حفظ التاج الجديد دائماً لعدم تكرار التنبيه لنفس التعديل
             localStorage.setItem('app_last_build_tag', lastModifiedHeader);
         }
     } catch (e) { console.log("خطأ في جلب تاريخ التحديث التلقائي"); }
 }
 
-// إخفاء الواجهة الترحيبية المتحركة بعد ثانيتين تماماً + تغيير النصيحة العشوائية + فحص التحديثات
+// ==========================================
+// ⚙️ إدارة القائمة المنسدلة والتهيئة العامة عند التحميل
+// ==========================================
 window.addEventListener('DOMContentLoaded', () => {
-    // تشغيل النصائح المحلية العشوائية عند فتح الصفحة
+    // 1. تشغيل النصائح المحلية العشوائية عند فتح الصفحة
     const tipElement = document.getElementById('liveTipText');
     if (tipElement) {
         tipElement.innerText = cvTips[Math.floor(Math.random() * cvTips.length)];
     }
 
-    // طلب إذن الإشعارات من المستخدم بشكل مهذب في الخلفية
-    if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
+    // 2. إدارة فتح وإغلاق قائمة أعلى اليسار المنسدلة
+    const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+    const topLeftMenu = document.getElementById('topLeftMenu');
+    if (dropdownToggleBtn && topLeftMenu) {
+        dropdownToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            topLeftMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!topLeftMenu.contains(e.target) && e.target !== dropdownToggleBtn) {
+                topLeftMenu.classList.add('hidden');
+            }
+        });
     }
 
-    // تشغيل الفحص الآلي الذكي للتحديثات
+    // 3. ربط زر تفعيل الإشعارات من داخل القائمة المنسدلة
+    const enableNotificationsBtn = document.getElementById('enableNotificationsBtn');
+    if (enableNotificationsBtn) {
+        enableNotificationsBtn.addEventListener('click', () => {
+            if (!("Notification" in window)) {
+                alert("متصفحك الحالي لا يدعم إشعارات الويب.");
+                return;
+            }
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    alert("🎯 تم تفعيل الإشعارات بنجاح! ستصلك تنبيهات تلقائية عند إضافة أي تحديث.");
+                    new Notification("🚀 نظام الإشعارات نشط", {
+                        body: "تم ربط التطبيق بنظام التنبيهات الذكي بنجاح."
+                    });
+                } else {
+                    alert("لم يتم تفعيل الإذن. يمكنك تفعيله يدوياً من إعدادات المتصفح علوياً.");
+                }
+            });
+        });
+    }
+
+    // 4. تشغيل الفحص الآلي الذكي للتحديثات المرفوعة على السيرفر
     checkAutomatedUpdates();
 
+    // 5. إخفاء الواجهة الترحيبية المتحركة
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         if (splash) {
