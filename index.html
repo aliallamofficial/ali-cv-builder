@@ -17,11 +17,9 @@
     <div class="container" style="position: relative;">
         
         <div class="top-left-dropdown">
-            <button id="dropdownToggleBtn" class="dropdown-trigger-btn">⚙️ الخيارات</button>
+            <button id="dropdownToggleBtn" class="dropdown-trigger-btn">⚙️</button>
             <div id="topLeftMenu" class="dropdown-menu-content hidden">
-                <button id="enableNotificationsBtn">🔔 تفعيل الإشعارات</button>
-                <a href="https://github.com/aliallamofficial" target="_blank">💻 مشروع GitHub</a>
-                <a href="mailto:prof.ali.hatem.cairo@gmail.com">✉️ الدعم الفني</a>
+                <button id="openSettingsBtn">⚙️ الإعدادات</button>
             </div>
         </div>
 
@@ -49,7 +47,7 @@
 
             <div style="margin-bottom: 15px;">
                 <label for="experience" style="display: block; color: #cbd5e1; margin-bottom: 8px; font-weight: bold;">الخبرات المهنية السابقة:</label>
-                <textarea id="experience" rows="4" placeholder="اذكر الشركات المهام الرئيسية التي قمت بها باختصار..." style="width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #fff; box-sizing: border-box; resize: vertical;"></textarea>
+                <textarea id="experience" rows="4" placeholder="اذكر الشركات والمهام الرئيسية التي قمت بها باختصار..." style="width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #fff; box-sizing: border-box; resize: vertical;"></textarea>
             </div>
 
             <div style="margin-bottom: 20px;">
@@ -126,6 +124,52 @@
             </div>
         </div>
 
+    </div>
+
+    <div id="settingsPageModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ إعدادات التطبيق</h2>
+                <button id="closeSettingsBtn" class="close-modal-x">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="settings-section-card">
+                    <h3>🔔 نظام تنبيهات دفع الويب</h3>
+                    <p>قم بتفعيل الإشعارات ليصلك إشعار فوري وتلقائي بمجرد قيامنا بتحديث خوارزميات أو ميزات التطبيق.</p>
+                    <button id="enableNotificationsBtn" class="action-settings-btn">تفعيل الإشعارات الآن</button>
+                </div>
+
+                <div class="settings-section-card">
+                    <h3>🔒 سياسة الخصوصية والأمان</h3>
+                    <p>نحن نحترم خصوصيتك بالكامل. كافة البيانات المدخلة لتوليد السير الذاتية تتم معالجتها لحظياً ولا يتم تخزينها على خوادمنا مطلقاً.</p>
+                    <a href="#" id="privacyPolicyLink" target="_blank" class="settings-link">قراءة سياسة الخصوصية الكاملة ←</a>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 25px 20px; background: #1e293b; border-top: 1px solid #334155; text-align: center; direction: rtl;">
+                
+                <p style="margin: 0 0 12px 0; font-size: 14px; color: #cbd5e1;">
+                    تم التطوير بكل فخر بواسطة <strong style="color: #38bdf8;">علي حاتم علام</strong> © 2026
+                </p>
+
+                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px; color: #475569; font-size: 13px;">
+                    <a href="https://github.com/aliallamofficial" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">GitHub</a>
+                    <span>|</span>
+                    <a href="https://linkedin.com/in/aliallamofficial" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: bold;">LinkedIn</a>
+                    <span>|</span>
+                    <a href="mailto:prof.ali.hatem.cairo@gmail.com" style="color: #10b981; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 4px;">
+                        ✉️ تواصل معي
+                    </a>
+                </div>
+
+                <div class="crypto-verified-box" style="background: #0f172a; border: 1px solid #1e293b; border-radius: 6px; padding: 10px; display: inline-block; min-width: 280px; font-family: monospace; font-size: 11px; color: #64748b; line-height: 1.5; direction: ltr; text-align: center;">
+                    Verified: @aliallamofficial [GPG:<br>
+                    55392380FBF1C8F1]
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
