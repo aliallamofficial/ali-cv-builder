@@ -121,7 +121,6 @@ document.getElementById('optimizeBtn').addEventListener('click', async () => {
     downloadContainer.classList.add('hidden');
     resultBox.innerHTML = '';
 
-    // تحديث نصيحة اليوم تلقائياً بناءً على مسمى وظيفة المستخدم عبر الـ AI عند الضغط على الزر
     if (navigator.onLine && jobTitle) {
         askAI(`أعطني نصيحة توظيف احترافية وموجزة جداً (سطر واحد فقط) لشخص يريد التقديم على وظيفة: ${jobTitle}`, "أنت خبير توظيف تعطي نصيحة مباشرة بدون مقدمات.")
         .then(aiTip => {
@@ -140,7 +139,6 @@ document.getElementById('optimizeBtn').addEventListener('click', async () => {
         return; 
     }
 
-    // تم إضافة شرط التدقيق اللغوي الحازم ومنع الأخطاء في التوجيه (AI Proofreading)
     let promptMessage = selectedLang === 'ar' ? 
         `قم بصياغة سيرة ذاتية احترافية وموجزة باللغة العربية للشخص التالي:\nالاسم: ${fullName}\nالوظيفة: ${jobTitle}\nالخبرات: ${experience || 'مبتدئ'}\nالمهارات: ${skills || 'تواصل'}\n\nشروط صارمة: أسلوب بشري، نقاط واضحة (•)، أفعال حركة قوية، وقم بإجراء تدقيق لغوي وإملائي كامل وتصحيح كافة الأخطاء النحوية واللغوية بصرامة.` :
         `Create a professional resume in English for:\nName: ${fullName}\nJob: ${jobTitle}\nExperience: ${experience || 'Entry-level'}\nSkills: ${skills || 'Communication'}\n\nStrict Rules: Human style, bullet points (•), and absolute proofreading to ensure zero spelling or grammatical errors.`;
@@ -363,13 +361,55 @@ const cvTips = [
     "الكلمات المفتاحية المأخوذة من إعلان الوظيفة نفسه هي مفتاحك السحري لتخطي فلترة الـ ATS."
 ];
 
-// إخفاء الواجهة الترحيبية المتحركة بعد ثانيتين تماماً + تغيير النصيحة العشوائية
+// ==========================================
+// 🔄 دالة الفحص التلقائي لآخر تعديل للملفات على السيرفر
+// ==========================================
+async function checkAutomatedUpdates() {
+    if (!navigator.onLine) return;
+    try {
+        // نقوم بعمل طلب برأسه فقط (HEAD) لملف الـ HTML لمعرفة تاريخ آخر تعديل له دون استهلاك البيانات
+        const response = await fetch(window.location.href, { method: 'HEAD', cache: 'no-cache' });
+        const lastModifiedHeader = response.headers.get('Last-Modified') || response.headers.get('ETag');
+        
+        if (lastModifiedHeader) {
+            const savedBuildTag = localStorage.getItem('app_last_build_tag');
+            
+            // إذا كان التاج المخزن يختلف عن المأخوذ من السيرفر، فهذا يعني أنك رفعت تعديلاً جديداً للأكواد!
+            if (savedBuildTag && savedBuildTag !== lastModifiedHeader) {
+                
+                // إطلاق إشعار النظام المباشر
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("🚀 تم تحديث التطبيق تلقائياً!", {
+                        body: "هناك ميزات وتحسينات جديدة تمت إضافتها للتطبيق، ألقِ نظرة عليها الآن."
+                    });
+                }
+                
+                // تنبيه المستخدم داخل الواجهة لتحديث الصفحة والحصول على الميزات الجديدة
+                setTimeout(() => {
+                    alert("✨ تحديث تلقائي سحري:\nتم رصد تعديلات برمجية وتحسينات جديدة في النظام لزيادة سرعة الذكاء الاصطناعي وتطوير المظهر!");
+                }, 3000);
+            }
+            // حفظ التاج الجديد دائماً لعدم تكرار التنبيه لنفس التعديل
+            localStorage.setItem('app_last_build_tag', lastModifiedHeader);
+        }
+    } catch (e) { console.log("خطأ في جلب تاريخ التحديث التلقائي"); }
+}
+
+// إخفاء الواجهة الترحيبية المتحركة بعد ثانيتين تماماً + تغيير النصيحة العشوائية + فحص التحديثات
 window.addEventListener('DOMContentLoaded', () => {
     // تشغيل النصائح المحلية العشوائية عند فتح الصفحة
     const tipElement = document.getElementById('liveTipText');
     if (tipElement) {
         tipElement.innerText = cvTips[Math.floor(Math.random() * cvTips.length)];
     }
+
+    // طلب إذن الإشعارات من المستخدم بشكل مهذب في الخلفية
+    if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+    }
+
+    // تشغيل الفحص الآلي الذكي للتحديثات
+    checkAutomatedUpdates();
 
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
